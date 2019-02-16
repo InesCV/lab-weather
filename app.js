@@ -14,6 +14,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const apiRouter = require('./routes/api');
 
 // mongodb connect
 // const dbName = 'YOUR-DATABASE-NAME';
@@ -32,6 +33,7 @@ const app = express();
 
 // app title
 // app.locals.title = "";
+app.use(expressLayouts);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,33 +41,33 @@ app.set('view engine', 'ejs');
 app.set('layout', 'layouts/main');
 
 // middlewares
-app.use(expressLayouts);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  store: new MongoStore({
-    mongooseConnection: mongoose.connection,
-    ttl: 24 * 60 * 60 // 1 day
-  }),
-  secret: 'jdej',
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-  },
-}));
-app.use(flash());
-app.use((req, res, next) => {
-  // app.locals.currentUser = req.session.currentUser;
-  res.locals.currentUser = req.session.currentUser;
-  next();
-});
+// app.use(session({
+//   store: new MongoStore({
+//     mongooseConnection: mongoose.connection,
+//     ttl: 24 * 60 * 60 // 1 day
+//   }),
+//   secret: 'jdej',
+//   resave: true,
+//   saveUninitialized: true,
+//   cookie: {
+//     maxAge: 24 * 60 * 60 * 1000,
+//   },
+// }));
+// app.use(flash());
+// app.use((req, res, next) => {
+//   // app.locals.currentUser = req.session.currentUser;
+//   res.locals.currentUser = req.session.currentUser;
+//   next();
+// });
 // app.use(notifications);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
