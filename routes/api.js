@@ -15,15 +15,16 @@ router.post('/', (req, res, next) => {
 
   // Make a request for a user with a given ID
   axios.get(url)
-    .then(({ data }) => {
+    .then((response) => {
       // handle success
-      console.log(data);
+      const { data } = response;
+      console.log(response);
       res.render('weather', { title: city, data });
     })
     .catch((error) => {
       // handle error
       console.log(error);
-      next();
+      res.render('error', { title: 'Not found', city, error });
     });
 });
 
